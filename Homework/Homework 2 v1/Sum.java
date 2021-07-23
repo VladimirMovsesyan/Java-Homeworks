@@ -13,6 +13,7 @@ public class Sum {
                 i = j;
             }
         }
+        
 
         return result;
     }
