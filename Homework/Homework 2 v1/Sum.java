@@ -18,10 +18,10 @@ public class Sum {
         return result;
     }
     public static void main(String[] args) {
-        args = new String[] {
-            "1 2",
-            " 3"
-        };
+        // args = new String[] {
+        //     "1 2",
+        //     " 3"
+        // };
         int answer = 0;
         for (String s : args) {
             answer += sumOfString(s);
