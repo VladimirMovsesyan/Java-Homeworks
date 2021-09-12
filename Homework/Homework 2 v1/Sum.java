@@ -13,19 +13,12 @@ public class Sum {
                 i = j;
             }
         }
-        
-
         return result;
     }
     public static void main(String[] args) {
-        // args = new String[] {
-        //     "1 2",
-        //     " 3"
-        // };
         int answer = 0;
-        for (String s : args) {
+        for (String s : args)
             answer += sumOfString(s);
-        }        
         System.out.println(answer);
     }
 }
