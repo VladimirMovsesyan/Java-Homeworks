@@ -1,15 +1,17 @@
-public class Sum {
+public class SumFloat {
 
-    public static int sumOfString(String s) {
+    public static float sumOfString(String s) {
         s = ' ' + s + ' ';
-        int result = 0;
+        //s = s.toLowerCase();
+        float result = 0;
         for (int i = 1; i < s.length(); i++) {
-            if (s.charAt(i) >= '0' && s.charAt(i) <= '9') {
+            if (!Character.isWhitespace(s.charAt(i))) {
                 int j = i;
-                while (s.charAt(j) >= '0' && s.charAt(j) <= '9') {
+                while (!Character.isWhitespace(s.charAt(j))) {
                     j++;
                 }
-                result += ((s.charAt(i - 1) != '-') ? Integer.parseInt(s.substring(i, j)) : -Integer.parseInt(s.substring(i, j)));
+                result += Float.parseFloat(s.substring(i, j));
+
                 i = j;
             }
         }
@@ -17,7 +19,7 @@ public class Sum {
     }
     
     public static void main(String[] args) {
-        int answer = 0;
+        float answer = 0;
         for (String s : args)
             answer += sumOfString(s);
         System.out.println(answer);
