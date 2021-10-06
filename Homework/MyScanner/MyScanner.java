@@ -46,8 +46,18 @@ public class MyScanner {
         return (ch == '-' || Character.isDigit(ch));
     }
 
+    public boolean goodForWord(char ch) {
+        return ((Character.getType(ch) == Character.DASH_PUNCTUATION || ch == '\'' || Character.isLetter(ch)));
+    }
+
     public void skipWhiteSpaces() throws IOException {
         while (read() && !goodForInt(this.buff[this.curPos])) {
+            this.curPos++;
+        }
+    }
+
+    public void skipNotAllowedSymbols() throws IOException {
+        while (read() && !goodForWord(this.buff[this.curPos])) {
             this.curPos++;
         }
     }
@@ -76,6 +86,20 @@ public class MyScanner {
     }
 
     public String nextLine() {
+        String temp = sb.toString();
+        sb = new StringBuilder();
+        return temp;
+    }
+
+    public boolean hasNextWord() throws IOException {
+        skipNotAllowedSymbols();
+        while ((curPos < curSize || read()) && goodForWord(buff[curPos])) {
+            sb.append(buff[curPos++]);
+        }
+        return (sb.length() > 0);
+    }
+
+    public String nextWord() {
         String temp = sb.toString();
         sb = new StringBuilder();
         return temp;

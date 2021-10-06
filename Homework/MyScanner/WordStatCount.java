@@ -17,31 +17,15 @@ public class WordStatCount {
 
         try {
             MyScanner in = new MyScanner(inputFile, "utf8");
-            String currentLine;
-            while (in.hasNextLine()) {
-                currentLine = in.nextLine();
-                if (currentLine == null) {
-                    break;
+            while (in.hasNextWord()) {
+                String word = in.nextWord();
+                if (wordCnt < dict.length) {
+                    dict[wordCnt++] = word;
+                } else {
+                    dict = Arrays.copyOf(dict, dict.length * 2);
+                    dict[wordCnt++] = word;
                 }
-                for (int i = 0; i < currentLine.length(); i++) {
-                    if (!isAllowedSymbol(currentLine.charAt(i))) {
-                        continue;
-                    }
-
-                    int j = i + 1;
-                    while (j < currentLine.length() && isAllowedSymbol(currentLine.charAt(j))) {
-                        j++;
-                    }
-
-                    if (wordCnt < dict.length) {
-                        dict[wordCnt++] = currentLine.substring(i, j);
-                    } else {
-                        dict = Arrays.copyOf(dict, dict.length * 2);
-                        dict[wordCnt++] = currentLine.substring(i, j);
-                    }
-                    dict[wordCnt - 1] = dict[wordCnt - 1].toLowerCase();
-                    i = j - 1;
-                }
+                dict[wordCnt - 1] = dict[wordCnt - 1].toLowerCase();
             }
             in.close();
         } catch (IOException e) {
