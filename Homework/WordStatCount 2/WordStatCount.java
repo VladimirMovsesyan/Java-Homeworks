@@ -10,8 +10,6 @@ public class WordStatCount {
     public static void main(String[] args) {
         String inputFile = args[0];
         String outputFile = args[1];
-        // String inputFile = "input.txt";
-        // String outputFile = "output.txt";
 
         String[] dict = new String[1];
         int wordCnt = 0;
@@ -36,11 +34,11 @@ public class WordStatCount {
                     }
 
                     if (wordCnt < dict.length) {
-                        dict[wordCnt++] = currentLine.substring(i, j);
+                        
                     } else {
                         dict = Arrays.copyOf(dict, dict.length * 2);
-                        dict[wordCnt++] = currentLine.substring(i, j);
                     }
+                    dict[wordCnt++] = currentLine.substring(i, j);
                     dict[wordCnt - 1] = dict[wordCnt - 1].toLowerCase();
                     i = j - 1;
                 }
@@ -71,6 +69,7 @@ public class WordStatCount {
                     int temp = dictCnt[j];
                     dictCnt[j] = dictCnt[j + 1];
                     dictCnt[j + 1] = temp;
+
                     String temp2 = dict[j];
                     dict[j] = dict[j + 1];
                     dict[j + 1] = temp2;
