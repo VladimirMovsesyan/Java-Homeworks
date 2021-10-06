@@ -67,11 +67,11 @@ public class MyScanner {
     }
 
     public boolean hasNextLine() throws IOException {
-        while (read() && buff[curPos] != '\n') {
+        while (read() && !(Character.toString(buff[curPos]).equals(System.getProperty("line.separator")))) {
             sb.append(buff[curPos++]);
             read();
         }
-        curPos += ((buff[curPos] == '\n') ? 1 : 0);
+        curPos += ((Character.toString(buff[curPos]).equals(System.getProperty("line.separator"))) ? 1 : 0);
         return (curSize != -1);
     }
 
