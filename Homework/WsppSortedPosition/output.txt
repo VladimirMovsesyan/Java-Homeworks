@@ -1,0 +1,8 @@
+be 2 1:2 1:6
+is 1 1:8
+not 1 1:4
+or 1 1:3
+question 1 1:10
+that 1 1:7
+the 1 1:9
+to 2 1:1 1:5
