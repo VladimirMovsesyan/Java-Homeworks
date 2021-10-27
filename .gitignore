@@ -1,7 +1,5 @@
-.vscode
-.DS_Store
+*.vscode
+*.DS_Store
 node_modules
-.vscode
-dist
 .idea
 *.class
