@@ -1,32 +1,31 @@
 package md2html;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class Part {
     private StringBuilder sb;
     private int index;
-    final private Map<String, String> mp;
-    final private Map<String, String> specs;
     private StringStack stack;
+    final private Map<String, String> mp = Map.of(
+        "`", "</code>",
+        "*", "</em>",
+        "_", "</em>",
+        "**", "</strong>",
+        "__", "</strong>",
+        "'", "'",
+        "--", "</s>",
+        "''", "</q>"
+    );
+    final private Map<String, String> specs = Map.of(
+        "<", "&lt;",
+        ">", "&gt;",
+        "&", "&amp;"
+    );
 
     public Part(StringBuilder sb) {
         this.sb = sb;
         index = 0;
-        mp = new HashMap<>();
-        specs = new HashMap<>();
         stack = new StringStack();
-
-        mp.put("`", "</code>");
-        mp.put("*", "</em>");
-        mp.put("_", "</em>");
-        mp.put("**", "</strong>");
-        mp.put("__", "</strong>");
-        mp.put("--", "</s>");
-
-        specs.put("<", "&lt;");
-        specs.put(">", "&gt;");
-        specs.put("&", "&amp;");
     }
 
     private int moveForward() {
@@ -55,7 +54,10 @@ public class Part {
                         String htmlSym = mp.get(stack.topString());
                         sb = new StringBuilder(sb.substring(0, i) + htmlSym + sb.substring(i + len));
 
-                        htmlSym = htmlSym.substring(0, 1) + htmlSym.substring(2);
+                        if (htmlSym.length() > 1) {
+                            htmlSym = htmlSym.substring(0, 1) + htmlSym.substring(2);
+                        }
+
                         sb = new StringBuilder(sb.substring(0, stack.topPos()) + 
                                                         htmlSym + sb.substring(stack.topPos() + len));
 
