@@ -3,9 +3,9 @@ package md2html;
 import java.util.Arrays;
 
 public class StringStack {
-    String[] s;
-    int head;
-    int[] pos;
+    private String[] s;
+    private int head;
+    private int[] pos;
 
     public StringStack() {
         s = new String[32];

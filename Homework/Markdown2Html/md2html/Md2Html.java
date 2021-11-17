@@ -4,7 +4,6 @@ import java.io.*;
 
 public class Md2Html {
     public static void main(String[] args) throws IOException {
-        // args = new String[]{"test1.in", "output.txt"};
 
         BufferedReader in = new BufferedReader(
             new InputStreamReader(

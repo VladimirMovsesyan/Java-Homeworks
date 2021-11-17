@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Part {
-    StringBuilder sb;
-    int index;
-    Map<String, String> mp;
-    Map<String, String> specs;
-    StringStack stack;
+    private StringBuilder sb;
+    private int index;
+    final private Map<String, String> mp;
+    final private Map<String, String> specs;
+    private StringStack stack;
 
     public Part(StringBuilder sb) {
         this.sb = sb;
