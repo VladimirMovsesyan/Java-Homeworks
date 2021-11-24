@@ -6,7 +6,7 @@ public class Part {
     private StringBuilder sb;
     private int index;
     private StringStack stack;
-    final private Map<String, String> mp = Map.of(
+    final private Map<String, String> closemp = Map.of(
         "`", "</code>",
         "*", "</em>",
         "_", "</em>",
@@ -16,6 +16,16 @@ public class Part {
         "--", "</s>",
         "''", "</q>"
     );
+
+    final private Map<String, String> openmp = Map.of(
+        "</code>", "<code>",
+        "</em>", "<em>",
+        "</strong>", "<strong>",
+        "'", "'",
+        "</s>", "<s>",
+        "</q>", "<q>"
+    );
+
     final private Map<String, String> specs = Map.of(
         "<", "&lt;",
         ">", "&gt;",
@@ -32,7 +42,7 @@ public class Part {
         while (index < sb.length() && sb.charAt(index) == '#') {
             index++;
         }
-        return (sb.charAt(index) == ' ' ? index : 0);
+        return (sb.charAt(index) == ' ' ? index : (index = 0));
     }
 
     private void getStartIndex() {
@@ -41,57 +51,84 @@ public class Part {
         }
     }
 
-    private void replacePairs() {
-        for (int len = 2; len > 0; len--) {
-            for (int i = 0; i + len < sb.length(); i++) {
-                if (mp.containsKey(sb.substring(i, i + len))) {
-                    if (i > 0 && sb.charAt(i - 1) == '\\') {
-                        sb = new StringBuilder(sb.substring(0, i - 1) + sb.substring(i));
-                        continue;
-                    }
-                    if (!stack.empty() && stack.topString().equals(sb.substring(i, i + len))) {
-                        int oldSize = sb.length();
-                        String htmlSym = mp.get(stack.topString());
-                        sb = new StringBuilder(sb.substring(0, i) + htmlSym + sb.substring(i + len));
-
-                        if (htmlSym.length() > 1) {
-                            htmlSym = htmlSym.substring(0, 1) + htmlSym.substring(2);
-                        }
-
-                        sb = new StringBuilder(sb.substring(0, stack.topPos()) + 
-                                                        htmlSym + sb.substring(stack.topPos() + len));
-
-                        stack.pop();
-                        i += htmlSym.length() - len - 1;
-                    } else {
-                        stack.push(sb.substring(i, i + len), i);
-                    }
-                }
-            }
+    private void updatePairs(StringBuilder temp, int ind, String tag, int len) {
+        if (!stack.empty() && stack.topString().equals(tag)) {
+            String htmlSym = closemp.get(stack.topString());
+            temp.append(htmlSym);
+            htmlSym = openmp.get(htmlSym);
+            temp.replace(stack.topPos(), stack.topPos() + len, htmlSym);
+            stack.pop();
+        } else {
+            stack.push(tag, temp.length());
+            temp.append(tag);
         }
     }
 
-    private void replaceSpecs() {
+    private StringBuilder replacePairs() {
+        StringBuilder temp = new StringBuilder();
         for (int i = 0; i < sb.length(); i++) {
-            if (specs.containsKey(sb.substring(i, i + 1))) {
-                String newSym = specs.get(sb.substring(i, i + 1));
-                sb = new StringBuilder(sb.substring(0, i) + newSym + sb.substring(i + 1));
-                i += newSym.length() - 2;
+            String oneTag = Character.toString(sb.charAt(i));
+            String twoTag = new String();
+            if (i + 1 < sb.length()) {
+                twoTag = Character.toString(sb.charAt(i)) + Character.toString(sb.charAt(i + 1));
+            }
+            if (closemp.containsKey(oneTag) || (i + 1 < sb.length() && closemp.containsKey(twoTag))) {
+                if (i > 0 && sb.charAt(i - 1) == '\\') {
+                    temp.setLength(temp.length() - 1);
+                    temp.append(sb.charAt(i));
+                    continue;
+                }
+                if (i + 1 < sb.length() && closemp.containsKey(twoTag)) {
+                    updatePairs(temp, i, twoTag, 2);
+                    i++;
+                } else if (closemp.containsKey(oneTag)) {
+                    updatePairs(temp, i, oneTag, 1);
+                }
+            } else {
+                temp.append(sb.charAt(i));
             }
         }
+        return temp;
+    }
+
+    private StringBuilder replaceSpecs() {
+        StringBuilder temp = new StringBuilder();
+        for (int i = 0; i < sb.length(); i++) {
+            if (specs.containsKey(Character.toString(sb.charAt(i)))) {
+                temp.append(specs.get(Character.toString(sb.charAt(i))));
+            } else {
+                temp.append(sb.charAt(i));
+            }
+        }
+        return temp;
+    }
+
+    private StringBuilder getTag(int ind, int level) {
+        StringBuilder temp = new StringBuilder();
+        if (ind == 0) {
+            temp.append("<p>");
+        } else {
+            temp.append("<h").append(level).append(">");
+        }
+        for (int i = ind; i < sb.length() - 1; i++) {
+            temp.append(sb.charAt(i));
+        }
+        if (ind == 0) {
+            temp.append("</p>\n");
+        } else {
+            temp.append("</h").append(level).append(">\n");
+        }
+        return temp;
     }
 
     public String modify() {
-        replaceSpecs();
-        int temp = moveForward();
-        if (temp != 0) {
+        sb = replaceSpecs();
+        int lvl = moveForward();
+        if (lvl != 0) {
             getStartIndex();
-            sb = new StringBuilder("<h" + temp + ">" + sb.substring(index, sb.length() - 1) + "</h" + temp + ">" + "\n");
-        } else {
-            index = 0;
-            sb = new StringBuilder("<p" + ">" + sb.substring(index, sb.length() - 1) + "</p" + ">" + "\n");
         }
-        replacePairs();
+        sb = getTag(index, lvl);
+        sb = replacePairs();
 
         return sb.toString();
     }
