@@ -44,6 +44,10 @@ public class MyScanner {
     }
 
     public boolean goodForInt(char ch) {
+        return (ch == '-' || Character.isDigit(ch));
+    }
+
+    public boolean goodForHex(char ch) {
         return (ch == Character.DASH_PUNCTUATION || Character.isDigit(ch) || (ch >= 'A' && ch <= 'F') || (ch >= 'a' && ch <= 'f'));
     }
 
@@ -52,7 +56,7 @@ public class MyScanner {
     }
 
     public void skipWhiteSpaces() throws IOException {
-        while (read() && !goodForInt(this.buff[this.curPos])) {
+        while (read() && !(goodForInt(this.buff[this.curPos]) || goodForHex(this.buff[this.curPos]))) {
             this.curPos++;
         }
     }
@@ -71,7 +75,21 @@ public class MyScanner {
         return (this.sb.length() > 0);
     }
 
+    public boolean hasNextHex() throws IOException {
+        skipWhiteSpaces();
+        while ((this.curPos < this.curSize || read()) && goodForHex(this.buff[this.curPos])) {
+            this.sb.append(this.buff[this.curPos++]);
+        }
+        return (this.sb.length() > 0);
+    }
+
     public int nextInt() {
+        String temp = this.sb.toString();
+        this.sb = new StringBuilder();
+        return Integer.parseInt(temp);
+    }
+
+    public int nextHex() {
         String temp = this.sb.toString();
         this.sb = new StringBuilder();
         return ((int) Long.parseLong(temp, 16));

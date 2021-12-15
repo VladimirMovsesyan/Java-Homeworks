@@ -35,8 +35,9 @@ public class MyScanner {
     }
 
     public boolean read() throws IOException {
-        if (this.curPos < this.curSize)
+        if (this.curPos < this.curSize) {
             return true;
+        }
         this.curSize = this.reader.read(this.buff, 0, this.buffSize);
         this.curPos = 0;
         return (this.curSize > -1);
@@ -44,6 +45,10 @@ public class MyScanner {
 
     public boolean goodForInt(char ch) {
         return (ch == '-' || Character.isDigit(ch));
+    }
+
+    public boolean goodForHex(char ch) {
+        return (ch == Character.DASH_PUNCTUATION || Character.isDigit(ch) || (ch >= 'A' && ch <= 'F') || (ch >= 'a' && ch <= 'f'));
     }
 
     public boolean goodForWord(char ch) {
@@ -70,10 +75,24 @@ public class MyScanner {
         return (this.sb.length() > 0);
     }
 
+    public boolean hasNextHex() throws IOException {
+        skipWhiteSpaces();
+        while ((this.curPos < this.curSize || read()) && goodForHex(this.buff[this.curPos])) {
+            this.sb.append(this.buff[this.curPos++]);
+        }
+        return (this.sb.length() > 0);
+    }
+
     public int nextInt() {
         String temp = this.sb.toString();
         this.sb = new StringBuilder();
         return Integer.parseInt(temp);
+    }
+
+    public int nextHex() {
+        String temp = this.sb.toString();
+        this.sb = new StringBuilder();
+        return (int)Long.parseLong(temp, 16);
     }
 
     public boolean hasNextLine() throws IOException {

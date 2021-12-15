@@ -13,8 +13,8 @@ public class ReverseHex2 {
         int[] a = new int[countOfDigits];
         MyScanner q = new MyScanner(t);
 
-        while (q.hasNextInt()) {
-            a[currdigit++] = q.nextInt();
+        while (q.hasNextHex()) {
+            a[currdigit++] = q.nextHex();
         }
         q.close();
         
