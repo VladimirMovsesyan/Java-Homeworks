@@ -4,6 +4,7 @@ import expression.Add;
 import expression.Const;
 import expression.Divide;
 import expression.Multiply;
+import expression.Negate;
 import expression.Subtract;
 import expression.TripleExpresion;
 import expression.TripleExpression;
@@ -13,16 +14,16 @@ public class ExpressionParser implements Parser {
 
     @Override
     public TripleExpression parse(String expression) {
+        System.err.println(expression);
         return parser(expression);
     }
 
     public TripleExpresion parser(String expression) {
         StackExpr stackExp = new StackExpr();
         StackOperation signs = new StackOperation();
-
+        boolean isSignAdded = true;
 
         for (int i = 0; i < expression.length();) {
-            boolean isSignAdded = true;
             while (i < expression.length() && Character.isWhitespace(expression.charAt(i))) {
                 i++;
             }
@@ -42,40 +43,50 @@ public class ExpressionParser implements Parser {
                 int balance = 1;
                 i++;
 
-                while (balance != 0 && expression.charAt(i) != ')') {
+                while (balance != 0) {
                     if (expression.charAt(i) == '(') {
                         balance++;
                     } else if (expression.charAt(i) == ')') {
                         balance--;
                     }
-                    sb.append(expression.charAt(i++));
+                    if (balance != 0) {
+                        sb.append(expression.charAt(i++));
+                    }
                 }
-                System.out.println(sb);
+                i++;
                 if (sb.length() > 0) {
                     stackExp.push(parser(sb.toString()));
                 }
+                isSignAdded = false;
             } else {
-                // if (isSignAdded && expression.charAt(i) == '-') {
-                //     signs.push('n');
-                //     continue;
-                // }
-                signs.push(expression.charAt(i++));
+                if (isSignAdded && expression.charAt(i) == '-') {
+                    signs.push('n');
+                    i++;
+                } else {
+                    signs.push(expression.charAt(i++));
+                }
                 isSignAdded = true;
             }
 
-            if (!isSignAdded && !signs.isEmpty() && getOperationPriority(signs.top()) == 1) {
-                // while (signs.top() == 'n') {
-                //     signs.pop();
-                //     stackExp.push(new Const(-stackExp.pop().evaluate(0, 0, 0)));
-                // }
-            TripleExpresion secondExpresion = stackExp.pop();
-            TripleExpresion firstExpresion = stackExp.pop();
-            char sign = signs.pop();
-            stackExp.push(combainExpressions(firstExpresion, secondExpresion, sign));
+            while (!isSignAdded && !signs.isEmpty() && signs.top() == 'n') {
+                signs.pop();
+                stackExp.push(new Negate(stackExp.pop()));
+            }
+
+            while (!isSignAdded && !signs.isEmpty() && getOperationPriority(signs.top()) == 1) {
+                TripleExpresion secondExpresion = stackExp.pop();
+                TripleExpresion firstExpresion = stackExp.pop();
+                char sign = signs.pop();
+                stackExp.push(combainExpressions(firstExpresion, secondExpresion, sign));
             }
         }
 
         while (!signs.isEmpty()) {
+            if (signs.top() == 'n') {
+                signs.pop();
+                stackExp.push(new Negate(stackExp.pop()));
+                continue;
+            }
             TripleExpresion secondExpresion = stackExp.pop();
             TripleExpresion firstExpresion = stackExp.pop();
             char sign = signs.pop();

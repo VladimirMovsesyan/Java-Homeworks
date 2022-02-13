@@ -8,7 +8,6 @@ public class Negate extends Operation {
 
     @Override
     public String toString() {
-        System.out.println("SHIT: " + a.toString());
         return "-" + super.a.toString();
     }
     @Override
