@@ -4,7 +4,6 @@ public abstract class Operation implements TripleExpresion {
     String value;
     TripleExpresion a;
     TripleExpresion b;
-    boolean isvar = false;
 
     public Operation(TripleExpresion a, TripleExpresion b) {
         this.a = a;
