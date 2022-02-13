@@ -12,6 +12,11 @@ public abstract class Operation implements TripleExpresion {
         value = "(" + a.getValue() + getSign() + b.getValue() + ")";
     }
 
+    public Operation(TripleExpresion a) {
+        this.a = a;
+        value = ("(" + getSign() + a.getValue() + ")");
+    }
+
     @Override
     public String toString() {
         return "(" + a.getValue() + getSign() + b.getValue() + ")";
