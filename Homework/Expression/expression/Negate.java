@@ -17,6 +17,10 @@ public class Negate extends Operation {
 
     @Override
     public int evaluate(int x) {
+        if (super.a.getClass().equals(Const.class)) {
+            super.a.toNegate();
+            return super.a.evaluate(x);
+        }
         return -(super.a.evaluate(x));
     }
 
@@ -32,6 +36,11 @@ public class Negate extends Operation {
 
     @Override
     public String getSign() {
-        return " - ";
+        return "-";
+    }
+
+    @Override
+    public void toNegate() {
+        return;
     }
 }

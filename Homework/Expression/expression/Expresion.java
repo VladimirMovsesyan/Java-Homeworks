@@ -8,4 +8,5 @@ public interface Expresion extends Expression {
     public int evaluate(int x);
     @Override
     boolean equals(Object obj);
+    public void toNegate();
 }

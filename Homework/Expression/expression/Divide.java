@@ -22,4 +22,9 @@ public class Divide extends Operation {
     public String getSign() {
         return " / ";
     }
+
+    @Override
+    public void toNegate() {
+        return;
+    }
 }

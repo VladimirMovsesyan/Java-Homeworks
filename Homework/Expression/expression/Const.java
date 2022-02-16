@@ -1,30 +1,31 @@
 package expression;
 
 public class Const implements TripleExpresion {
-    int value;
+    String value;
+    boolean negateFlag = false;
 
     public Const(int val) {
-        value = val;
+        value = Integer.toString(val);
     }
 
     @Override
     public String toString() {
-        return Integer.toString(value);
+        return value;
     }
 
     @Override
     public int hashCode() {
-        return value;
+        return Integer.parseInt(value) + (isNegate() ? 1 : 0);
     }
 
     @Override
     public int evaluate(int x) {
-        return value;
+        return Integer.parseInt((isNegate() ? "-" : "") + value);
     }
 
     @Override
     public int evaluate(int x, int y, int z) {
-        return value;
+        return Integer.parseInt((isNegate() ? "-" : "") + value);
     }
 
 	@Override
@@ -37,5 +38,13 @@ public class Const implements TripleExpresion {
             return false;
         }
         return this.toString().equals(obj.toString());
+    }
+
+    public boolean isNegate() {
+        return negateFlag;
+    }
+
+    public void toNegate() {
+        negateFlag = (isNegate() ? false : true);
     }
 }

@@ -23,4 +23,9 @@ public class Multiply extends Operation {
     public String getValue() {
         return super.value;
     }
+
+    @Override
+    public void toNegate() {
+        return;
+    }
 }

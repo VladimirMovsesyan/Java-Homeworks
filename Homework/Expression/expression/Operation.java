@@ -13,7 +13,7 @@ public abstract class Operation implements TripleExpresion {
 
     public Operation(TripleExpresion a) {
         this.a = a;
-        value = ("(" + getSign() + a.getValue() + ")");
+        value = getSign() + a.getValue();
     }
 
     @Override
@@ -67,4 +67,6 @@ public abstract class Operation implements TripleExpresion {
         }
         return this.toString().equals(obj.toString());
     }
+
+    abstract public void toNegate();
 }

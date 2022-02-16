@@ -14,7 +14,6 @@ public class ExpressionParser implements Parser {
 
     @Override
     public TripleExpression parse(String expression) {
-        System.err.println(expression);
         return parser(expression);
     }
 
@@ -26,6 +25,10 @@ public class ExpressionParser implements Parser {
         for (int i = 0; i < expression.length();) {
             while (i < expression.length() && Character.isWhitespace(expression.charAt(i))) {
                 i++;
+            }
+
+            if (i >= expression.length()) {
+                break;
             }
 
             if (Character.isDigit(expression.charAt(i))) {
@@ -60,6 +63,18 @@ public class ExpressionParser implements Parser {
                 isSignAdded = false;
             } else {
                 if (isSignAdded && expression.charAt(i) == '-') {
+                    if (Character.isDigit(getNextChar(expression, i + 1))) {
+                        i++;
+                        while (i < expression.length() && Character.isWhitespace(expression.charAt(i))) {
+                            i++;
+                        }
+                        StringBuilder sb = new StringBuilder();
+                        while (i < expression.length() && Character.isDigit(expression.charAt(i))) {
+                            sb.append(expression.charAt(i++));
+                        }
+                        stackExp.push(new Const(Integer.parseInt("-" + sb.toString())));
+                        continue;
+                    }
                     signs.push('n');
                     i++;
                 } else {
@@ -94,6 +109,14 @@ public class ExpressionParser implements Parser {
         }
 
         return stackExp.pop();
+    }
+
+    private char getNextChar(String expression, int i) {
+        while (i < expression.length() && Character.isWhitespace(i)) {
+            i++;
+        }
+
+        return (i < expression.length() ? expression.charAt(i) : 0);
     }
 
     public int getOperationPriority(char x) {

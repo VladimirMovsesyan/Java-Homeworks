@@ -48,4 +48,9 @@ public class Variable implements TripleExpresion {
         }
         return var.equals(obj.toString());
     }
+
+    @Override
+    public void toNegate() {
+        return;
+    }
 }

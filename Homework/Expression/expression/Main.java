@@ -19,9 +19,13 @@ public class Main {
 
         ExpressionParser ep = new ExpressionParser();
 
-        String temp = "((4))";
+        String temp = "(y + (x - (-2147483648 + (x + x))))";
+        int x = -1534516706;
+        int y = -816864994;
 
-        System.out.println(ep.parse(temp).evaluate(2, 1, 0));
+        System.out.println((y + (x - (-2147483648 + (x + x)))));
+
+        System.out.println(ep.parse(temp).evaluate(-1534516706, -816864994, 1077556082));
         System.out.println(ep.parse(temp).toString());
     }
 }
