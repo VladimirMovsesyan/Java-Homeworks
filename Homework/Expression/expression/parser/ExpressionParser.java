@@ -11,9 +11,12 @@ import expression.TripleExpression;
 import expression.Variable;
 
 public class ExpressionParser implements Parser {
-
+    int i = 0;
     @Override
     public TripleExpression parse(String expression) {
+        System.err.println("Test# " + Integer.toString(++i));
+        System.err.println(expression);
+        System.err.println(parser(expression).evaluate(-1534516706, -816864994, 1077556082));
         return parser(expression);
     }
 
@@ -23,7 +26,7 @@ public class ExpressionParser implements Parser {
         boolean isSignAdded = true;
 
         for (int i = 0; i < expression.length();) {
-            while (i < expression.length() && Character.isWhitespace(expression.charAt(i))) {
+            while (i < expression.length() && (Character.isWhitespace(expression.charAt(i)) || Character.toString(expression.charAt(i)).equals(System.lineSeparator()))) {
                 i++;
             }
 
@@ -65,7 +68,7 @@ public class ExpressionParser implements Parser {
                 if (isSignAdded && expression.charAt(i) == '-') {
                     if (Character.isDigit(getNextChar(expression, i + 1))) {
                         i++;
-                        while (i < expression.length() && Character.isWhitespace(expression.charAt(i))) {
+                        while (i < expression.length() && (Character.isWhitespace(expression.charAt(i)) || Character.toString(expression.charAt(i)).equals(System.lineSeparator()))) {
                             i++;
                         }
                         StringBuilder sb = new StringBuilder();
@@ -112,7 +115,7 @@ public class ExpressionParser implements Parser {
     }
 
     private char getNextChar(String expression, int i) {
-        while (i < expression.length() && Character.isWhitespace(i)) {
+        while (i < expression.length() && (Character.isWhitespace(expression.charAt(i)) || Character.toString(expression.charAt(i)).equals(System.lineSeparator()))) {
             i++;
         }
 
